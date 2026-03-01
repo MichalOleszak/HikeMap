@@ -211,12 +211,87 @@ header h1 {
   }
 }
 
-\.leaflet-popup-content-wrapper {
-  background: rgba(2, 7, 12, 0.95);
+\.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgba(1, 5, 9, 0.95);
   color: #e2e8f0;
   border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+}
+
+.leaflet-popup-content {
+  margin: 0;
+}
+
+.popup-card {
+  min-width: 260px;
+  background: linear-gradient(145deg, rgba(5, 12, 18, 0.95), rgba(9, 20, 32, 0.9));
+  padding: 1rem 1.1rem 1.25rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.popup-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.65);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+}
+
+.title-block {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.title-block h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #f8fafc;
+}
+
+.title-block p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.popup-flag {
+  font-size: 1.4rem;
+}
+
+.popup-metrics {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.popup-metrics li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.35rem;
+}
+
+.popup-metrics li span {
+  color: #94a3b8;
+}
+
+.popup-metrics li strong {
+  color: #fef3c7;
+}
+
+.photo-placeholder {
 }
 
 .popup-card {
