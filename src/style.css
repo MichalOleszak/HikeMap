@@ -213,15 +213,29 @@ header h1 {
 
 \.leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: rgba(1, 5, 9, 0.95);
-  color: #e2e8f0;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+  background: transparent;
+  box-shadow: none;
+  border: none;
 }
 
 .leaflet-popup-content {
   margin: 0;
+  padding: 0;
+}
+
+.leaflet-popup-close-button {
+  color: #e2e8f0;
+  top: 8px;
+  right: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #fef3c7;
 }
 
 .popup-card {
