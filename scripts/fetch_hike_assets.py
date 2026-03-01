@@ -127,8 +127,8 @@ def main() -> None:
     parser.add_argument(
         "--limit",
         type=int,
-        default=50,
-        help="Number of recent activities to inspect",
+        default=10000,
+        help="Number of recent activities to inspect (higher = farther back in history)",
     )
     parser.add_argument(
         "--use-sample",
