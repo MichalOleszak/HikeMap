@@ -141,6 +141,8 @@ header h1 {
 .top-card .value {
   color: #f97316;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .flag-and-name {
