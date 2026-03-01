@@ -98,9 +98,22 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
     except GarminConnectAuthenticationError as err:  # pragma: no cover - network
         raise SystemExit(f"Failed to authenticate with Garmin: {err}")
 
-    activities = client.get_activities(0, limit)
-    hikes: List[Hike] = []
+    activities: List[Dict[str, Any]] = []
+    fetched = 0
+    max_batch = 1000
+    while fetched < limit:
+        batch_size = min(max_batch, limit - fetched)
+        if batch_size <= 0:
+            break
+        batch = client.get_activities(fetched, batch_size)
+        if not batch:
+            break
+        activities.extend(batch)
+        fetched += len(batch)
+        if len(batch) < batch_size:
+            break
 
+    hikes: List[Hike] = []
     for activity in activities:
         activity_type = (activity.get("activityType") or {}).get("typeKey", "").lower()
         if activity_type not in {"hiking", "trail_running", "mountaineering"}:
@@ -128,7 +141,7 @@ def main() -> None:
         "--limit",
         type=int,
         default=10000,
-        help="Number of recent activities to inspect (higher = farther back in history)",
+        help="Approximate number of recent activities to inspect (batched at 1000 per API call)",
     )
     parser.add_argument(
         "--use-sample",
