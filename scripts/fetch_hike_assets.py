@@ -103,7 +103,7 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
 
     for activity in activities:
         activity_type = (activity.get("activityType") or {}).get("typeKey", "").lower()
-        if activity_type not in {"hiking", "trail_running"}:
+        if activity_type not in {"hiking", "trail_running", "mountaineering"}:
             continue
         activity_id = activity.get("activityId")
         polyline = None
