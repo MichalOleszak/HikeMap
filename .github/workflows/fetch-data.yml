@@ -1,4 +1,4 @@
-name: Refresh hike data
+name: Refresh hike data and deploy
 
 on:
   schedule:
@@ -7,10 +7,18 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'hike-map-pages'
+  cancel-in-progress: true
 
 jobs:
-  fetch:
+  refresh_and_deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,7 +29,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -48,9 +56,32 @@ jobs:
           git push
           echo "changed=true" >> $GITHUB_OUTPUT
 
-      - name: Trigger deploy workflow
+      - name: Set up Node
         if: steps.commit.outputs.changed == 'true'
-        uses: peter-evans/workflow-dispatch@v2
+        uses: actions/setup-node@v4
         with:
-          workflow: Build and deploy site
-          ref: main
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        if: steps.commit.outputs.changed == 'true'
+        run: npm ci
+
+      - name: Build site
+        if: steps.commit.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Configure Pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
