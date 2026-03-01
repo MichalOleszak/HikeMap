@@ -1,0 +1,47 @@
+[
+  {
+    "id": "sample-001",
+    "name": "Monte Boglia Loop",
+    "date": "2025-10-12",
+    "distance_km": 14.2,
+    "elevation_gain_m": 980,
+    "max_elevation_m": 1516,
+    "duration_h": 5.1,
+    "location": {
+      "lat": 46.0124,
+      "lng": 9.0011
+    },
+    "polyline": null,
+    "cover_photo": null
+  },
+  {
+    "id": "sample-002",
+    "name": "Creux du Van Traverse",
+    "date": "2025-08-03",
+    "distance_km": 17.8,
+    "elevation_gain_m": 1240,
+    "max_elevation_m": 1460,
+    "duration_h": 6.4,
+    "location": {
+      "lat": 46.9366,
+      "lng": 6.7289
+    },
+    "polyline": null,
+    "cover_photo": null
+  },
+  {
+    "id": "sample-003",
+    "name": "Piz Languard Summit",
+    "date": "2025-07-20",
+    "distance_km": 12.3,
+    "elevation_gain_m": 1345,
+    "max_elevation_m": 3262,
+    "duration_h": 5.9,
+    "location": {
+      "lat": 46.4865,
+      "lng": 9.9612
+    },
+    "polyline": null,
+    "cover_photo": null
+  }
+]

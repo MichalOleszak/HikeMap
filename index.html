@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hike Map</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="eyebrow">Michal's hikes</div>
+        <h1>Hike Map</h1>
+        <p>Interactive overview of recent adventures, refreshed automatically from Garmin.</p>
+      </header>
+
+      <section class="map-panel">
+        <div id="map"></div>
+        <div class="panel-meta">
+          <span>Last updated: <strong id="lastUpdated">loading…</strong></span>
+        </div>
+      </section>
+
+      <section id="stats" class="stats-grid"></section>
+
+      <section id="top-lists" class="top-grid"></section>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
