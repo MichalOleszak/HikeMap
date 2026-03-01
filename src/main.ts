@@ -102,7 +102,7 @@ function formatWithUnit(value: number | null | undefined, decimals: number, unit
 }
 
 function formatDate(value: string | null | undefined): string {
-  if (!value) return 'Date TBD';
+  if (!value) return '—';
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) {
     return value;
