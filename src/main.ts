@@ -137,7 +137,7 @@ function renderTopLists(hikes: Hike[]): void {
                 <div>
                   <div class="flag-and-name">
                     ${flag ? `<span class="flag-pill">${flag}</span>` : ''}
-                    <strong>${hike.name}</strong>
+                    <strong title="${hike.name}">${hike.name}</strong>
                   </div>
                   <span>${new Date(hike.date).toLocaleDateString()}</span>
                 </div>

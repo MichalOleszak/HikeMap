@@ -149,6 +149,14 @@ header h1 {
   gap: 0.4rem;
 }
 
+.flag-and-name strong {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .flag-pill {
   font-size: 1rem;
   line-height: 1;
