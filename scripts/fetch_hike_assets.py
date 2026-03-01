@@ -26,6 +26,9 @@ SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_data"
 MANUAL_HIKES_PATH = Path(__file__).resolve().parents[1] / "data" / "manual_hikes.yaml"
 
 
+OVERRIDES_PATH = Path(__file__).resolve().parents[1] / "data" / "overrides.yaml"
+
+
 def slugify(value: str) -> str:
     if not value:
         return "manual-hike"
@@ -80,6 +83,27 @@ class Hike:
             polyline=polyline,
             cover_photo=None,
         )
+
+
+def load_overrides() -> Dict[str, Dict[str, Any]]:
+    if not OVERRIDES_PATH.exists():
+        return {}
+    with OVERRIDES_PATH.open(encoding='utf-8') as fp:
+        payload = yaml.safe_load(fp) or []
+    overrides: Dict[str, Dict[str, Any]] = {}
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        hike_id = entry.get('id')
+        if not hike_id:
+            continue
+        overrides[str(hike_id)] = {
+            'distance_km': parse_float(entry.get('distance_km')),
+            'elevation_gain_m': parse_float(entry.get('elevation_gain_m')),
+            'max_elevation_m': parse_float(entry.get('max_elevation_m')),
+            'duration_h': parse_float(entry.get('duration_h')),
+        }
+    return overrides
 
 
 def load_manual_hikes() -> List[Hike]:
@@ -226,7 +250,21 @@ def main() -> None:
             "source": "sample",
         }
     else:
+        overrides = load_overrides()
         hikes = fetch_from_garmin(args.limit)
+        if overrides:
+            for hike in hikes:
+                patch = overrides.get(hike.id)
+                if not patch:
+                    continue
+                if patch.get('distance_km') is not None:
+                    hike.distance_km = patch['distance_km']
+                if patch.get('elevation_gain_m') is not None:
+                    hike.elevation_gain_m = patch['elevation_gain_m']
+                if patch.get('max_elevation_m') is not None:
+                    hike.max_elevation_m = patch['max_elevation_m']
+                if patch.get('duration_h') is not None:
+                    hike.duration_h = patch['duration_h']
         manual_hikes = load_manual_hikes()
         if manual_hikes:
             hikes.extend(manual_hikes)
@@ -234,6 +272,7 @@ def main() -> None:
             "last_updated": datetime.now(timezone.utc).isoformat(),
             "source": "garmin+manual" if manual_hikes else "garmin",
             "manual_count": len(manual_hikes),
+            "override_count": len(overrides),
         }
 
     if not hikes:
