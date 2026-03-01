@@ -153,9 +153,9 @@ function renderTopLists(hikes: Hike[]): void {
   const container = document.querySelector<HTMLDivElement>('#top-lists');
   if (!container) return;
   container.innerHTML = `
-    ${makeList('Top distance', topByDistance, 'km')}
-    ${makeList('Top elevation gain', topByGain, 'm-gain')}
-    ${makeList('Top max elevation', topByElevation, 'm')}
+    ${makeList('🥾 Top distance', topByDistance, 'km')}
+    ${makeList('⛰️ Top elevation gain', topByGain, 'm-gain')}
+    ${makeList('🏔️ Top max elevation', topByElevation, 'm')}
   `;
 }
 
