@@ -98,7 +98,7 @@
   location: Romania
   date: null
   distance_km: 7.7
-  elevation_gain_m: 1940.0
+  elevation_gain_m: 731.0
   max_elevation_m: 2314.0
   lat: 45.615
   lng: 24.72
@@ -121,8 +121,8 @@
 - name: Szpiglasowy Wierch
   location: Polska
   date: null
-  distance_km: 26.5
-  elevation_gain_m: 1212.0
+  distance_km: 27.6
+  elevation_gain_m: 1438.0
   max_elevation_m: 2172.0
   lat: 49.205
   lng: 20.043
@@ -137,8 +137,8 @@
 - name: Wołowiec
   location: Polska
   date: null
-  distance_km: 26.4
-  elevation_gain_m: 1190.0
+  distance_km: 19.0
+  elevation_gain_m: 1108.0
   max_elevation_m: 2054.0
   lat: 49.233
   lng: 19.784
