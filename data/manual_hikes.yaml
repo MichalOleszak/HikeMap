@@ -137,8 +137,8 @@
 - name: Wołowiec
   location: Polska
   date: null
-  distance_km: 19.0
-  elevation_gain_m: 1108.0
+  distance_km: 28.2
+  elevation_gain_m: 1212.0
   max_elevation_m: 2054.0
   lat: 49.233
   lng: 19.784
