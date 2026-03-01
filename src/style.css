@@ -169,7 +169,7 @@ header h1 {
 }
 
 .hike-marker {
-  background: transparent;
+  background: transparent !important;
 }
 
 .marker-pulse {
@@ -211,11 +211,12 @@ header h1 {
   }
 }
 
-\.leaflet-popup-content-wrapper,
+\.leaflet-popup,
+.leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: transparent;
-  box-shadow: none;
-  border: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .leaflet-popup-content {
