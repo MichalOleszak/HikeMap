@@ -218,17 +218,26 @@ function attachMap(hikes: Hike[]): void {
       <span>Photo coming soon</span>
     </div>`;
 
+    const flag = flagForHike(hike);
+
     marker.bindPopup(`
-      <div class="popup">
-        <h3>${hike.name}</h3>
-        <p>${formatDate(hike.date)}</p>
-        <ul>
-          <li><strong>${formatWithUnit(hike.distance_km, 1, 'km')}</strong> distance</li>
-          <li><strong>${formatWithUnit(hike.elevation_gain_m, 0, 'm')}</strong> elevation gain</li>
-          <li><strong>${formatWithUnit(hike.max_elevation_m, 0, 'm')}</strong> max elevation</li>
+      <div class="popup-card">
+        <header>
+          <div class="title-block">
+            ${flag ? `<span class="popup-flag">${flag}</span>` : ''}
+            <div>
+              <h3>${hike.name}</h3>
+              <p>${formatDate(hike.date)}</p>
+            </div>
+          </div>
+          ${polylineSection}
+        </header>
+        <ul class="popup-metrics">
+          <li><span>Distance</span><strong>${formatWithUnit(hike.distance_km, 1, 'km')}</strong></li>
+          <li><span>Elevation gain</span><strong>${formatWithUnit(hike.elevation_gain_m, 0, 'm')}</strong></li>
+          <li><span>Max elevation</span><strong>${formatWithUnit(hike.max_elevation_m, 0, 'm')}</strong></li>
         </ul>
         ${photoFrame}
-        ${polylineSection}
       </div>
     `);
 

@@ -214,12 +214,67 @@ header h1 {
 .leaflet-popup-content-wrapper {
   background: rgba(5, 12, 18, 0.92);
   color: #f8fafc;
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
 }
 
-.popup ul {
-  padding-left: 1rem;
+.popup-card {
+  min-width: 240px;
+}
+
+.popup-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.title-block {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.title-block h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.title-block p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.popup-flag {
+  font-size: 1.4rem;
+}
+
+.popup-metrics {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.popup-metrics li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.35rem;
+}
+
+.popup-metrics li span {
+  color: #94a3b8;
+}
+
+.popup-metrics li strong {
+  color: #f8fafc;
 }
 
 .photo-placeholder {
