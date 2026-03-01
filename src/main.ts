@@ -1,6 +1,7 @@
 import './style.css';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { iso1A2Code } from '@rapideditor/country-coder';
 
 type Hike = {
   id: string;
@@ -48,6 +49,25 @@ function ensureMap(): L.Map {
     }).addTo(map);
   }
   return map;
+}
+
+function isoToFlag(iso: string | null): string | null {
+  if (!iso || iso.length !== 2) return null;
+  const chars = Array.from(iso.toUpperCase());
+  return chars
+    .map((char) => String.fromCodePoint(char.codePointAt(0)! + 127397))
+    .join('');
+}
+
+function flagForHike(hike: Hike): string | null {
+  const { lat, lng } = hike.location;
+  if (lat == null || lng == null) return null;
+  try {
+    const iso = iso1A2Code([lng, lat]);
+    return isoToFlag(iso || null);
+  } catch {
+    return null;
+  }
 }
 
 async function fetchJSON<T>(url: string): Promise<T> {
@@ -109,20 +129,22 @@ function renderTopLists(hikes: Hike[]): void {
       <h3>${title}</h3>
       <ul>
         ${list
-          .map(
-            (hike) => `
+          .map((hike) => {
+            const flag = flagForHike(hike);
+            const value = unit === 'km' ? hike.distance_km : unit === 'm-gain' ? hike.elevation_gain_m : hike.max_elevation_m;
+            return `
               <li>
                 <div>
-                  <strong>${hike.name}</strong>
+                  <div class="flag-and-name">
+                    ${flag ? `<span class="flag-pill">${flag}</span>` : ''}
+                    <strong>${hike.name}</strong>
+                  </div>
                   <span>${new Date(hike.date).toLocaleDateString()}</span>
                 </div>
-                <span class="value">${formatNumber(
-                  unit === 'km' ? hike.distance_km : unit === 'm-gain' ? hike.elevation_gain_m : hike.max_elevation_m,
-                  unit === 'km' ? 1 : 0
-                )} ${unit === 'm-gain' ? 'm' : unit}</span>
+                <span class="value">${formatNumber(value, unit === 'km' ? 1 : 0)} ${unit === 'm-gain' ? 'm' : unit}</span>
               </li>
-            `
-          )
+            `;
+          })
           .join('')}
       </ul>
     </div>
