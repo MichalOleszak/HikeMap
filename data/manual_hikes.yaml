@@ -1,256 +1,248 @@
-- name: "Galdhøpiggen"
-  location: "Norway"
+- name: Galdhøpiggen
+  location: Norway
   date: null
   distance_km: 12.3
-  elevation_gain_m: 1368
-  max_elevation_m: 2469
-  lat: 61.6360
+  elevation_gain_m: 1368.0
+  max_elevation_m: 2469.0
+  lat: 61.636
   lng: 8.3151
-- name: "Carrauntoohil"
-  location: "Ireland"
+- name: Carrauntoohil
+  location: Ireland
   date: null
   distance_km: 11.2
-  elevation_gain_m: 806
-  max_elevation_m: 1039
+  elevation_gain_m: 806.0
+  max_elevation_m: 1039.0
   lat: 51.9997
   lng: -9.7422
-- name: "Landmannalaugar"
-  location: "Iceland"
+- name: Landmannalaugar
+  location: Iceland
   date: null
   distance_km: 23.2
-  elevation_gain_m: 801
-  max_elevation_m: 1000
+  elevation_gain_m: 801.0
+  max_elevation_m: 1000.0
   lat: 63.9833
   lng: -19.0668
-- name: "Refuge du Toubkal"
-  location: "Morocco"
+- name: Refuge du Toubkal
+  location: Morocco
   date: null
   distance_km: 11.7
-  elevation_gain_m: 1501
-  max_elevation_m: 3207
+  elevation_gain_m: 1501.0
+  max_elevation_m: 3207.0
   lat: 31.0669
-  lng: -7.9180
-- name: "Zugspitze Day 1"
-  location: "Germany"
+  lng: -7.918
+- name: Zugspitze Day 1
+  location: Germany
   date: null
   distance_km: 24.2
-  elevation_gain_m: 2180
-  max_elevation_m: 2962
-  lat: 47.4210
-  lng: 10.9850
-- name: "Zugspitze Day 2"
-  location: "Germany"
+  elevation_gain_m: 2180.0
+  max_elevation_m: 2040.0
+  lat: 47.421
+  lng: 10.985
+- name: Zugspitze Day 2
+  location: Germany
   date: null
   distance_km: 4.0
-  elevation_gain_m: 2040
-  max_elevation_m: 2051
-  lat: 47.4210
-  lng: 10.9850
-- name: "Musala"
-  location: "Bulgaria"
+  elevation_gain_m: 911.0
+  max_elevation_m: 2962.0
+  lat: 47.421
+  lng: 10.985
+- name: Musala
+  location: Bulgaria
   date: null
   distance_km: 12.8
-  elevation_gain_m: 1593
-  max_elevation_m: 2925
+  elevation_gain_m: 1593.0
+  max_elevation_m: 2925.0
   lat: 42.1791
-  lng: 23.5850
-- name: "Edelweissweg (Höhbalmen)"
-  location: "Switzerland"
+  lng: 23.585
+- name: Edelweissweg (Höhbalmen)
+  location: Switzerland
   date: null
   distance_km: 20.0
-  elevation_gain_m: 1275
-  max_elevation_m: 2745
+  elevation_gain_m: 1275.0
+  max_elevation_m: 2745.0
   lat: 46.0117
   lng: 7.7491
-- name: "Koruldi Lakes"
-  location: "Georgia"
+- name: Koruldi Lakes
+  location: Geogrgia
   date: null
   distance_km: 9.4
-  elevation_gain_m: 1346
-  max_elevation_m: 2740
+  elevation_gain_m: 1346.0
+  max_elevation_m: 2740.0
   lat: 43.0019
   lng: 42.7088
-- name: "Moldoveanu Day 1"
-  location: "Romania"
+- name: Moldoveanu Day 1
+  location: Romania
   date: null
   distance_km: 17.1
-  elevation_gain_m: 1136
-  max_elevation_m: 1500
+  elevation_gain_m: 1136.0
+  max_elevation_m: 1500.0
   lat: 45.6006
   lng: 24.7416
-- name: "Moldoveanu Day 2"
-  location: "Romania"
+- name: Moldoveanu Day 2
+  location: Romania
   date: null
   distance_km: 2.8
-  elevation_gain_m: 570
-  max_elevation_m: 2100
-  lat: 45.6070
+  elevation_gain_m: 570.0
+  max_elevation_m: 2100.0
+  lat: 45.607
   lng: 24.7416
-- name: "Moldoveanu Day 3"
-  location: "Romania"
+- name: Moldoveanu Day 3
+  location: Romania
   date: null
   distance_km: 11.9
-  elevation_gain_m: 861
-  max_elevation_m: 2544
-  lat: 45.6100
-  lng: 24.7300
-- name: "Moldoveanu Day 4"
-  location: "Romania"
+  elevation_gain_m: 861.0
+  max_elevation_m: 2544.0
+  lat: 45.61
+  lng: 24.73
+- name: Moldoveanu Day 4
+  location: Romania
   date: null
   distance_km: 7.7
-  elevation_gain_m: 1940
-  max_elevation_m: 2314
-  lat: 45.6150
-  lng: 24.7200
-- name: "Skrajny Granat"
-  location: "Poland"
+  elevation_gain_m: 1940.0
+  max_elevation_m: 2314.0
+  lat: 45.615
+  lng: 24.72
+- name: Skrajny Granat
+  location: Polska
   date: null
   distance_km: 19.8
-  elevation_gain_m: 1558
-  max_elevation_m: 2225
-  lat: 49.2300
-  lng: 20.0080
-- name: "Czerwone Wierchy"
-  location: "Poland"
+  elevation_gain_m: 1558.0
+  max_elevation_m: 2225.0
+  lat: 49.23
+  lng: 20.008
+- name: Czerwone Wierchy
+  location: Polska
   date: null
   distance_km: 12.9
-  elevation_gain_m: 503
-  max_elevation_m: 2122
+  elevation_gain_m: 503.0
+  max_elevation_m: 2122.0
   lat: 49.2367
   lng: 19.9315
-- name: "Szpiglasowy Wierch"
-  location: "Poland"
-  date: null
-  distance_km: 26.5
-  elevation_gain_m: 1212
-  max_elevation_m: 2172
-  lat: 49.2050
-  lng: 20.0430
-- name: "Giewont"
-  location: "Poland"
-  date: null
-  distance_km: 11.9
-  elevation_gain_m: 876
-  max_elevation_m: 1894
+- name: Szpiglasowy Wierch
+  location: Polska
+  date: '26.5'
+  distance_km: 1212.0
+  elevation_gain_m: 2172.0
+  max_elevation_m: null
+  lat: 49.205
+  lng: 20.043
+- name: Giewont
+  location: Polska
+  date: '11.9'
+  distance_km: 876.0
+  elevation_gain_m: 1894.0
+  max_elevation_m: null
   lat: 49.2536
   lng: 19.9226
-- name: "Wołowiec"
-  location: "Poland"
-  date: null
-  distance_km: 26.4
-  elevation_gain_m: 1190
-  max_elevation_m: 2054
+- name: Wołowiec
+  location: Polska
+  date: '26.4'
+  distance_km: 1190.0
+  elevation_gain_m: 2054.0
+  max_elevation_m: null
   lat: 49.2319
-  lng: 19.7440
-- name: "Świnica"
-  location: "Poland"
-  date: null
-  distance_km: 12.6
-  elevation_gain_m: 424
-  max_elevation_m: 2301
+  lng: 19.744
+- name: Świnica
+  location: Polska
+  date: '12.6'
+  distance_km: 424.0
+  elevation_gain_m: 2301.0
+  max_elevation_m: null
   lat: 49.2203
   lng: 20.0026
-- name: "Mnich"
-  location: "Poland"
-  date: null
-  distance_km: 22.4
-  elevation_gain_m: 995
-  max_elevation_m: 2068
+- name: Mnich
+  location: Polska
+  date: '22.4'
+  distance_km: 995.0
+  elevation_gain_m: 2068.0
+  max_elevation_m: null
   lat: 49.2028
   lng: 20.0464
-- name: "Cminda Sameba"
-  location: "Georgia"
+- name: Cminda Sameba
+  location: Georgia
   date: null
   distance_km: 2.5
-  elevation_gain_m: 450
-  max_elevation_m: 2170
+  elevation_gain_m: 450.0
+  max_elevation_m: 2170.0
   lat: 42.6622
   lng: 44.6198
-- name: "Đỉnh Langbiang"
-  location: "Vietnam"
+- name: Đỉnh Langbiang
+  location: Vietnam
   date: null
   distance_km: 4.6
-  elevation_gain_m: 626
-  max_elevation_m: 2167
+  elevation_gain_m: 626.0
+  max_elevation_m: 2167.0
   lat: 12.0078
   lng: 108.4464
-- name: "Troodos"
-  location: "Cyprus"
+- name: Troodos
+  location: Cyprus
   date: null
   distance_km: null
-  elevation_gain_m: null
-  max_elevation_m: 1700
+  elevation_gain_m: 1700.0
+  max_elevation_m: null
   lat: 34.9167
   lng: 32.8333
-- name: "Pico Ruivo"
-  location: "Madeira"
+- name: Pico Ruivo
+  location: Madeira
   date: null
   distance_km: 5.6
-  elevation_gain_m: 261
-  max_elevation_m: 1861
+  elevation_gain_m: 261.0
+  max_elevation_m: 1861.0
   lat: 32.7679
-  lng: -16.9280
-- name: "Pico do Arieiro"
-  location: "Madeira"
+  lng: -16.928
+- name: Pico de Arieiro
+  location: Madeira
   date: null
   distance_km: null
   elevation_gain_m: null
-  max_elevation_m: 1818
+  max_elevation_m: 1818.0
   lat: 32.7356
-  lng: -16.9250
-- name: "Punta La Marmora"
-  location: "Italy"
-  date: null
-  distance_km: 10.7
-  elevation_gain_m: 305
-  max_elevation_m: 1834
-  lat: 39.9743
-  lng: 9.2961
-- name: "Snæfell"
-  location: "Iceland"
+  lng: -16.925
+- name: Snæfell
+  location: Iceland
   date: null
   distance_km: null
-  elevation_gain_m: 1033
-  max_elevation_m: 1833
+  elevation_gain_m: 1033.0
+  max_elevation_m: 1833.0
   lat: 64.7986
-  lng: -15.9980
-- name: "Babia Góra"
-  location: "Poland"
+  lng: -15.998
+- name: Babia Góra
+  location: Poland
   date: null
   distance_km: 11.4
-  elevation_gain_m: 1009
-  max_elevation_m: 1725
-  lat: 49.5720
-  lng: 19.5290
-- name: "Ensign Peak"
-  location: "Utah"
+  elevation_gain_m: 1009.0
+  max_elevation_m: 1725.0
+  lat: 49.572
+  lng: 19.529
+- name: Ensign Peak
+  location: Utah
   date: null
   distance_km: 8.2
-  elevation_gain_m: 310
-  max_elevation_m: 1651
+  elevation_gain_m: 310.0
+  max_elevation_m: 1651.0
   lat: 40.7903
   lng: -111.8883
-- name: "Preikestolen"
-  location: "Norway"
+- name: Preikestolen
+  location: Norway
   date: null
   distance_km: 8.2
-  elevation_gain_m: 306
-  max_elevation_m: 604
+  elevation_gain_m: 306.0
+  max_elevation_m: 604.0
   lat: 58.9866
   lng: 6.1906
-- name: "Fløyen"
-  location: "Norway"
+- name: Fløyen
+  location: Norway
   date: null
   distance_km: 4.9
-  elevation_gain_m: 388
-  max_elevation_m: 390
+  elevation_gain_m: 388.0
+  max_elevation_m: 390.0
   lat: 60.3972
   lng: 5.3457
-- name: "Aksla"
-  location: "Norway"
+- name: Aksla
+  location: Norway
   date: null
   distance_km: 2.2
-  elevation_gain_m: 146
-  max_elevation_m: 146
+  elevation_gain_m: 146.0
+  max_elevation_m: 146.0
   lat: 62.4726
   lng: 6.1549
