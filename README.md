@@ -32,6 +32,20 @@ Pre-Garmin adventures live in `data/manual_hikes.yaml`. Each entry can include:
 
 Leave any unknown metric as `null` and it will render as `—` in the UI (and be skipped in the "Top" boxes). The fetch script automatically merges these manual entries with the Garmin data set.
 
+## Metric overrides
+
+For Garmin-recorded hikes where the watch died early or a metric is off, add an entry to `data/overrides.yaml`:
+
+```yaml
+- id: "1234567890"      # Garmin activityId
+  distance_km: 25.5      # optional (omit or set to null to skip)
+  elevation_gain_m: null
+  max_elevation_m: null
+  duration_h: null
+```
+
+Currently the ID must match the Garmin `activityId`. Any metric provided (distance, elevation gain, max elevation, or duration) replaces the Garmin value before the site is built. These overrides also run inside the nightly GitHub Action.
+
 ## Updating data from Garmin
 
 The `scripts/fetch_hike_assets.py` script logs in to Garmin Connect using the `GARMIN_USERNAME` and `GARMIN_PASSWORD` environment variables. Run it locally like so:
@@ -42,16 +56,17 @@ export GARMIN_PASSWORD="super-secret"
 python3 scripts/fetch_hike_assets.py --limit 10000
 ```
 
-The script writes refreshed JSON to `public/data/` and updates `meta.json` with a timestamp (plus a manual-hike count, if any). Any changes can then be committed and pushed.
+The script writes refreshed JSON to `public/data/` and updates `meta.json` with a timestamp (plus counts for manual hikes and overrides, if any). Any changes can then be committed and pushed.
 
 ## GitHub Actions
 
 `fetch-data.yml` handles the entire pipeline:
 
 1. Refresh data from Garmin (up to 10k recent activities).
-2. Append manual hikes from `data/manual_hikes.yaml`.
-3. Commit changes (if any).
-4. Build the Vite site and deploy to GitHub Pages.
+2. Apply metric overrides from `data/overrides.yaml`.
+3. Append manual hikes from `data/manual_hikes.yaml`.
+4. Commit changes (if any).
+5. Build the Vite site and deploy to GitHub Pages.
 
 Ensure the repository has the following Actions secrets configured:
 
