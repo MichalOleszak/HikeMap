@@ -6,11 +6,11 @@ import { iso1A2Code } from '@rapideditor/country-coder';
 type Hike = {
   id: string;
   name: string;
-  date: string;
-  distance_km: number;
-  elevation_gain_m: number;
-  max_elevation_m: number;
-  duration_h: number;
+  date: string | null;
+  distance_km: number | null;
+  elevation_gain_m: number | null;
+  max_elevation_m: number | null;
+  duration_h: number | null;
   location: {
     lat: number | null;
     lng: number | null;
@@ -22,6 +22,7 @@ type Hike = {
 type Meta = {
   last_updated: string;
   source: string;
+  manual_count?: number;
 };
 
 const DATA_PATH = `${import.meta.env.BASE_URL}data/hikes.json`;
@@ -85,17 +86,34 @@ async function fetchJSON<T>(url: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-function formatNumber(value: number, decimals = 1): string {
+function formatNumber(value: number | null | undefined, decimals = 1): string {
+  if (value == null || Number.isNaN(value)) {
+    return '—';
+  }
   return value.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });
 }
 
+function formatWithUnit(value: number | null | undefined, decimals: number, unitLabel: string): string {
+  const formatted = formatNumber(value, decimals);
+  return formatted === '—' ? formatted : `${formatted} ${unitLabel}`;
+}
+
+function formatDate(value: string | null | undefined): string {
+  if (!value) return 'Date TBD';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+  return parsed.toLocaleDateString();
+}
+
 function renderStats(hikes: Hike[]): void {
-  const totalDistance = hikes.reduce((sum, hike) => sum + (hike.distance_km || 0), 0);
-  const totalElevation = hikes.reduce((sum, hike) => sum + (hike.elevation_gain_m || 0), 0);
-  const highestPoint = hikes.reduce((max, hike) => Math.max(max, hike.max_elevation_m || 0), 0);
+  const totalDistance = hikes.reduce((sum, hike) => sum + (hike.distance_km ?? 0), 0);
+  const totalElevation = hikes.reduce((sum, hike) => sum + (hike.elevation_gain_m ?? 0), 0);
+  const highestPoint = hikes.reduce((max, hike) => Math.max(max, hike.max_elevation_m ?? 0), 0);
 
   const statsEl = document.querySelector<HTMLDivElement>('#stats');
   if (!statsEl) return;
@@ -120,25 +138,35 @@ function renderStats(hikes: Hike[]): void {
   `;
 }
 
-function renderTopLists(hikes: Hike[]): void {
-  const topByDistance = [...hikes]
-    .sort((a, b) => b.distance_km - a.distance_km)
-    .slice(0, 5);
-  const topByGain = [...hikes]
-    .sort((a, b) => b.elevation_gain_m - a.elevation_gain_m)
-    .slice(0, 5);
-  const topByElevation = [...hikes]
-    .sort((a, b) => b.max_elevation_m - a.max_elevation_m)
-    .slice(0, 5);
+function topByMetric(list: Hike[], metric: (hike: Hike) => number | null | undefined, limit = 5): Hike[] {
+  return list
+    .map((hike) => ({ hike, value: metric(hike) }))
+    .filter(({ value }) => value != null && !Number.isNaN(value as number))
+    .sort((a, b) => (b.value as number) - (a.value as number))
+    .slice(0, limit)
+    .map(({ hike }) => hike);
+}
 
-  const makeList = (title: string, list: Hike[], unit: string) => `
+function renderTopLists(hikes: Hike[]): void {
+  const topByDistance = topByMetric(hikes, (hike) => hike.distance_km);
+  const topByGain = topByMetric(hikes, (hike) => hike.elevation_gain_m);
+  const topByElevation = topByMetric(hikes, (hike) => hike.max_elevation_m);
+
+  const makeList = (title: string, list: Hike[], unit: 'km' | 'm-gain' | 'm') => `
     <div class="top-card">
       <h3>${title}</h3>
       <ul>
         ${list
           .map((hike) => {
             const flag = flagForHike(hike);
-            const value = unit === 'km' ? hike.distance_km : unit === 'm-gain' ? hike.elevation_gain_m : hike.max_elevation_m;
+            const value = unit === 'km'
+              ? hike.distance_km
+              : unit === 'm-gain'
+              ? hike.elevation_gain_m
+              : hike.max_elevation_m;
+            const decimals = unit === 'km' ? 1 : 0;
+            const unitLabel = unit === 'm-gain' ? 'm' : unit;
+            const valueLabel = formatWithUnit(value, decimals, unitLabel);
             return `
               <li>
                 <div>
@@ -146,9 +174,9 @@ function renderTopLists(hikes: Hike[]): void {
                     ${flag ? `<span class="flag-pill">${flag}</span>` : ''}
                     <strong title="${hike.name}">${truncateName(hike.name)}</strong>
                   </div>
-                  <span>${new Date(hike.date).toLocaleDateString()}</span>
+                  <span>${formatDate(hike.date)}</span>
                 </div>
-                <span class="value">${formatNumber(value, unit === 'km' ? 1 : 0)} ${unit === 'm-gain' ? 'm' : unit}</span>
+                <span class="value">${valueLabel}</span>
               </li>
             `;
           })
@@ -168,7 +196,7 @@ function renderTopLists(hikes: Hike[]): void {
 
 function attachMap(hikes: Hike[]): void {
   const currentMap = ensureMap();
-  const validHikes = hikes.filter((hike) => hike.location.lat && hike.location.lng);
+  const validHikes = hikes.filter((hike) => hike.location.lat != null && hike.location.lng != null);
   if (validHikes.length === 0) {
     currentMap.setView([23.0, 10.0], 2.5);
     return;
@@ -177,7 +205,7 @@ function attachMap(hikes: Hike[]): void {
   const bounds = L.latLngBounds([]);
 
   validHikes.forEach((hike) => {
-    if (!hike.location.lat || !hike.location.lng) return;
+    if (hike.location.lat == null || hike.location.lng == null) return;
     const marker = L.marker([hike.location.lat, hike.location.lng], {
       icon: hikeIcon,
     }).addTo(currentMap);
@@ -193,11 +221,11 @@ function attachMap(hikes: Hike[]): void {
     marker.bindPopup(`
       <div class="popup">
         <h3>${hike.name}</h3>
-        <p>${new Date(hike.date).toLocaleDateString()}</p>
+        <p>${formatDate(hike.date)}</p>
         <ul>
-          <li><strong>${formatNumber(hike.distance_km, 1)} km</strong> distance</li>
-          <li><strong>${formatNumber(hike.elevation_gain_m, 0)} m</strong> elevation gain</li>
-          <li><strong>${formatNumber(hike.max_elevation_m, 0)} m</strong> max elevation</li>
+          <li><strong>${formatWithUnit(hike.distance_km, 1, 'km')}</strong> distance</li>
+          <li><strong>${formatWithUnit(hike.elevation_gain_m, 0, 'm')}</strong> elevation gain</li>
+          <li><strong>${formatWithUnit(hike.max_elevation_m, 0, 'm')}</strong> max elevation</li>
         </ul>
         ${photoFrame}
         ${polylineSection}
@@ -218,7 +246,9 @@ function updateLastUpdated(meta: Meta | null): void {
   const lastUpdatedEl = document.querySelector<HTMLSpanElement>('#lastUpdated');
   if (!lastUpdatedEl || !meta) return;
   const date = new Date(meta.last_updated);
-  lastUpdatedEl.textContent = `${date.toLocaleString()} (${meta.source})`;
+  const dateLabel = Number.isNaN(date.getTime()) ? meta.last_updated : date.toLocaleString();
+  const manualInfo = meta.manual_count && meta.manual_count > 0 ? `${meta.source}, +${meta.manual_count} manual` : meta.source;
+  lastUpdatedEl.textContent = `${dateLabel} (${manualInfo})`;
 }
 
 async function init() {

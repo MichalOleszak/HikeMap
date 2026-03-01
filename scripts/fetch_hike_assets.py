@@ -5,11 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
+import unicodedata
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import yaml
 
 try:
     from garminconnect import Garmin, GarminConnectAuthenticationError  # type: ignore
@@ -19,17 +23,39 @@ except ImportError:  # pragma: no cover - handled by requirements
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "public" / "data"
 SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_data"
+MANUAL_HIKES_PATH = Path(__file__).resolve().parents[1] / "data" / "manual_hikes.yaml"
+
+
+def slugify(value: str) -> str:
+    if not value:
+        return "manual-hike"
+    normalized = unicodedata.normalize('NFKD', value)
+    ascii_value = normalized.encode('ascii', 'ignore').decode('ascii')
+    slug = re.sub(r'[^a-z0-9]+', '-', ascii_value.lower()).strip('-')
+    return slug or 'manual-hike'
+
+
+def parse_float(value: Any, digits: int = 2) -> Optional[float]:
+    if value is None:
+        return None
+    if isinstance(value, str) and value.strip() == '':
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return round(number, digits)
 
 
 @dataclass
 class Hike:
     id: str
     name: str
-    date: str
-    distance_km: float
-    elevation_gain_m: float
-    max_elevation_m: float
-    duration_h: float
+    date: Optional[str]
+    distance_km: Optional[float]
+    elevation_gain_m: Optional[float]
+    max_elevation_m: Optional[float]
+    duration_h: Optional[float]
     location: Dict[str, Optional[float]]
     polyline: Optional[str]
     cover_photo: Optional[str]
@@ -54,6 +80,49 @@ class Hike:
             polyline=polyline,
             cover_photo=None,
         )
+
+
+def load_manual_hikes() -> List[Hike]:
+    if not MANUAL_HIKES_PATH.exists():
+        return []
+
+    with MANUAL_HIKES_PATH.open(encoding='utf-8') as fp:
+        payload = yaml.safe_load(fp) or []
+
+    hikes: List[Hike] = []
+    seen_ids: set[str] = set()
+
+    for index, entry in enumerate(payload):
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get('name') or f'Manual hike {index + 1}'
+        base_id = entry.get('id') or f"manual-{slugify(name)}"
+        candidate = base_id
+        suffix = 1
+        while candidate in seen_ids:
+            candidate = f"{base_id}-{suffix}"
+            suffix += 1
+        seen_ids.add(candidate)
+
+        hikes.append(
+            Hike(
+                id=candidate,
+                name=name,
+                date=entry.get('date') or None,
+                distance_km=parse_float(entry.get('distance_km')),
+                elevation_gain_m=parse_float(entry.get('elevation_gain_m'), 1),
+                max_elevation_m=parse_float(entry.get('max_elevation_m'), 1),
+                duration_h=parse_float(entry.get('duration_h')),
+                location={
+                    'lat': parse_float(entry.get('lat'), 6),
+                    'lng': parse_float(entry.get('lng'), 6),
+                },
+                polyline=None,
+                cover_photo=None,
+            )
+        )
+
+    return hikes
 
 
 def write_payload(hikes: List[Hike], meta: Dict[str, Any]) -> None:
@@ -131,7 +200,7 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
             polyline = None
         hikes.append(Hike.from_activity(activity, polyline))
 
-    hikes.sort(key=lambda h: h.date, reverse=True)
+    hikes.sort(key=lambda h: h.date or "", reverse=True)
     return hikes
 
 
@@ -158,9 +227,13 @@ def main() -> None:
         }
     else:
         hikes = fetch_from_garmin(args.limit)
+        manual_hikes = load_manual_hikes()
+        if manual_hikes:
+            hikes.extend(manual_hikes)
         meta = {
             "last_updated": datetime.now(timezone.utc).isoformat(),
-            "source": "garmin",
+            "source": "garmin+manual" if manual_hikes else "garmin",
+            "manual_count": len(manual_hikes),
         }
 
     if not hikes:
