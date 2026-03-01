@@ -419,3 +419,7 @@ header h1 {
 .leaflet-control-attribution a {
   color: #f97316 !important;
 }
+
+.leaflet-container {
+  background: #050c12 !important;
+}
