@@ -34,9 +34,11 @@ jobs:
           python scripts/fetch_hike_assets.py --limit 80
 
       - name: Commit and push if changed
+        id: commit
         run: |
           if git diff --quiet public/data; then
             echo "No data changes"
+            echo "changed=false" >> $GITHUB_OUTPUT
             exit 0
           fi
           git config user.name 'github-actions'
@@ -44,3 +46,11 @@ jobs:
           git add public/data
           git commit -m 'chore: refresh hike data'
           git push
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Trigger deploy workflow
+        if: steps.commit.outputs.changed == 'true'
+        uses: peter-evans/workflow-dispatch@v2
+        with:
+          workflow: Build and deploy site
+          ref: main
