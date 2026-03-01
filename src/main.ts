@@ -211,10 +211,6 @@ function attachMap(hikes: Hike[]): void {
       icon: hikeIcon,
     }).addTo(currentMap);
 
-    const polylineSection = hike.polyline
-      ? '<p class="polyline-pill">Route ready</p>'
-      : '<p class="polyline-pill muted">Route coming soon</p>';
-
     const photoFrame = `<div class="photo-placeholder">
       <span>Photo coming soon</span>
     </div>`;
@@ -231,7 +227,6 @@ function attachMap(hikes: Hike[]): void {
               <p>${formatDate(hike.date)}</p>
             </div>
           </div>
-          ${polylineSection}
         </header>
         <ul class="popup-metrics">
           <li><span>Distance</span><strong>${formatWithUnit(hike.distance_km, 1, 'km')}</strong></li>
