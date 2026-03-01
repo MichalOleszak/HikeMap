@@ -85,25 +85,61 @@ class Hike:
         )
 
 
-def load_overrides() -> Dict[str, Dict[str, Any]]:
+def load_overrides() -> List[Dict[str, Any]]:
     if not OVERRIDES_PATH.exists():
-        return {}
+        return []
     with OVERRIDES_PATH.open(encoding='utf-8') as fp:
         payload = yaml.safe_load(fp) or []
-    overrides: Dict[str, Dict[str, Any]] = {}
+    overrides: List[Dict[str, Any]] = []
     for entry in payload:
         if not isinstance(entry, dict):
             continue
-        hike_id = entry.get('id')
-        if not hike_id:
-            continue
-        overrides[str(hike_id)] = {
+        overrides.append({
+            'id': str(entry['id']) if entry.get('id') not in {None, ''} else None,
+            'name': entry.get('name'),
+            'date': entry.get('date'),
             'distance_km': parse_float(entry.get('distance_km')),
             'elevation_gain_m': parse_float(entry.get('elevation_gain_m')),
             'max_elevation_m': parse_float(entry.get('max_elevation_m')),
             'duration_h': parse_float(entry.get('duration_h')),
-        }
+        })
     return overrides
+
+
+def apply_overrides(hikes: List[Hike], overrides: List[Dict[str, Any]]) -> int:
+    if not overrides:
+        return 0
+
+    hikes_by_id = {hike.id: hike for hike in hikes if hike.id}
+    applied = 0
+
+    for override in overrides:
+        target = None
+        override_id = override.get('id')
+        if override_id and override_id in hikes_by_id:
+            target = hikes_by_id[override_id]
+        else:
+            name = override.get('name')
+            if not name:
+                continue
+            date_hint = override.get('date')
+            for hike in hikes:
+                if hike.name == name and (not date_hint or hike.date == date_hint):
+                    target = hike
+                    break
+        if not target:
+            continue
+
+        updated = False
+        for field in ('distance_km', 'elevation_gain_m', 'max_elevation_m', 'duration_h'):
+            value = override.get(field)
+            if value is not None:
+                setattr(target, field, value)
+                updated = True
+        if updated:
+            applied += 1
+
+    return applied
 
 
 def load_manual_hikes() -> List[Hike]:
@@ -252,19 +288,7 @@ def main() -> None:
     else:
         overrides = load_overrides()
         hikes = fetch_from_garmin(args.limit)
-        if overrides:
-            for hike in hikes:
-                patch = overrides.get(hike.id)
-                if not patch:
-                    continue
-                if patch.get('distance_km') is not None:
-                    hike.distance_km = patch['distance_km']
-                if patch.get('elevation_gain_m') is not None:
-                    hike.elevation_gain_m = patch['elevation_gain_m']
-                if patch.get('max_elevation_m') is not None:
-                    hike.max_elevation_m = patch['max_elevation_m']
-                if patch.get('duration_h') is not None:
-                    hike.duration_h = patch['duration_h']
+        applied_overrides = apply_overrides(hikes, overrides)
         manual_hikes = load_manual_hikes()
         if manual_hikes:
             hikes.extend(manual_hikes)
@@ -272,7 +296,7 @@ def main() -> None:
             "last_updated": datetime.now(timezone.utc).isoformat(),
             "source": "garmin+manual" if manual_hikes else "garmin",
             "manual_count": len(manual_hikes),
-            "override_count": len(overrides),
+            "override_count": applied_overrides,
         }
 
     if not hikes:

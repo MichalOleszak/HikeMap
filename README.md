@@ -37,14 +37,16 @@ Leave any unknown metric as `null` and it will render as `—` in the UI (and be
 For Garmin-recorded hikes where the watch died early or a metric is off, add an entry to `data/overrides.yaml`:
 
 ```yaml
-- id: "1234567890"      # Garmin activityId
-  distance_km: 25.5      # optional (omit or set to null to skip)
+- id: "1234567890"      # Garmin activityId (optional if you use name/date)
+  name: "Mulhacén"      # fallback match when id is unknown
+  date: 2023-10-05        # optional extra guard
+  distance_km: 25.5       # omit or set to null to skip
   elevation_gain_m: null
   max_elevation_m: null
   duration_h: null
 ```
 
-Currently the ID must match the Garmin `activityId`. Any metric provided (distance, elevation gain, max elevation, or duration) replaces the Garmin value before the site is built. These overrides also run inside the nightly GitHub Action.
+Overrides are matched by `id` when possible; otherwise the script falls back to `name` (and `date` if provided) to find the hike to patch. Any metric provided (distance, elevation gain, max elevation, or duration) replaces the Garmin value before the site is built. These overrides also run inside the nightly GitHub Action.
 
 ## Updating data from Garmin
 
