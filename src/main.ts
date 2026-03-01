@@ -30,9 +30,9 @@ let map: L.Map | null = null;
 
 const hikeIcon = L.divIcon({
   className: 'hike-marker',
-  html: '<span class="marker-dot"></span>',
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
+  html: `<span class="marker-pulse"><span class="marker-core"></span></span>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
 });
 
 function ensureMap(): L.Map {
