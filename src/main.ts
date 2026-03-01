@@ -163,7 +163,7 @@ function attachMap(hikes: Hike[]): void {
   const currentMap = ensureMap();
   const validHikes = hikes.filter((hike) => hike.location.lat && hike.location.lng);
   if (validHikes.length === 0) {
-    currentMap.setView([46.0, 8.9], 5);
+    currentMap.setView([23.0, 10.0], 2.5);
     return;
   }
 
@@ -201,7 +201,7 @@ function attachMap(hikes: Hike[]): void {
   });
 
   if (!bounds.isValid()) {
-    currentMap.setView([46.0, 8.9], 5);
+    currentMap.setView([23.0, 10.0], 2.5);
   } else {
     currentMap.fitBounds(bounds.pad(0.25));
   }
