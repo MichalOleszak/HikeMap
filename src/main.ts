@@ -43,10 +43,11 @@ function ensureMap(): L.Map {
       zoomControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd',
       minZoom: 2,
-      maxZoom: 18,
+      maxZoom: 19,
     }).addTo(map);
   }
   return map;

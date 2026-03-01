@@ -315,3 +315,12 @@ header h1 {
     height: 420px;
   }
 }
+
+.leaflet-control-attribution {
+  background: rgba(5, 12, 18, 0.85) !important;
+  color: #cbd5f5 !important;
+}
+
+.leaflet-control-attribution a {
+  color: #f97316 !important;
+}
