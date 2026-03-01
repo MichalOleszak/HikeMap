@@ -51,6 +51,13 @@ function ensureMap(): L.Map {
   return map;
 }
 
+function truncateName(name: string, maxLength = 20): string {
+  if (!name) return '';
+  const normalized = Array.from(name);
+  if (normalized.length <= maxLength) return name;
+  return normalized.slice(0, maxLength - 1).join('') + '…';
+}
+
 function isoToFlag(iso: string | null): string | null {
   if (!iso || iso.length !== 2) return null;
   const chars = Array.from(iso.toUpperCase());
@@ -137,7 +144,7 @@ function renderTopLists(hikes: Hike[]): void {
                 <div>
                   <div class="flag-and-name">
                     ${flag ? `<span class="flag-pill">${flag}</span>` : ''}
-                    <strong title="${hike.name}">${hike.name}</strong>
+                    <strong title="${hike.name}">${truncateName(hike.name)}</strong>
                   </div>
                   <span>${new Date(hike.date).toLocaleDateString()}</span>
                 </div>
