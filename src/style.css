@@ -423,3 +423,26 @@ header h1 {
 .leaflet-container {
   background: #050c12 !important;
 }
+
+.popup-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #f8fafc;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.2;
+}
+
+.popup-title .popup-flag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+#map,
+.leaflet-container {
+  background-color: #060606 !important;
+}
+

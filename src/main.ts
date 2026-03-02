@@ -216,14 +216,14 @@ function attachMap(hikes: Hike[]): void {
     </div>`;
 
     const flag = flagForHike(hike);
+    const hikeTitle = `${flag ? `<span class="popup-flag" aria-hidden="true">${flag}</span>` : ''}${hike.name}`;
 
     marker.bindPopup(`
       <div class="popup-card">
         <header>
           <div class="title-block">
-            ${flag ? `<span class="popup-flag">${flag}</span>` : ''}
             <div>
-              <h3>${hike.name}</h3>
+              <h3 class="popup-title">${hikeTitle}</h3>
               <p>${formatDate(hike.date)}</p>
             </div>
           </div>
