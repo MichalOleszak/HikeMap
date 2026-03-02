@@ -1,6 +1,9 @@
 name: Refresh hike data and deploy
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 2 * * *'  # 02:00 UTC daily
   workflow_dispatch:
