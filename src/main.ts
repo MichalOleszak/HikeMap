@@ -224,11 +224,11 @@ function attachMap(hikes: Hike[]): void {
           <div class="title-block">
             <div>
               <h3 class="popup-title">${hikeTitle}</h3>
-              <p>${formatDate(hike.date)}</p>
             </div>
           </div>
         </header>
         <ul class="popup-metrics">
+          <li><span>Date</span><strong>${formatDate(hike.date)}</strong></li>
           <li><span>Distance</span><strong>${formatWithUnit(hike.distance_km, 1, 'km')}</strong></li>
           <li><span>Elevation gain</span><strong>${formatWithUnit(hike.elevation_gain_m, 0, 'm')}</strong></li>
           <li><span>Max elevation</span><strong>${formatWithUnit(hike.max_elevation_m, 0, 'm')}</strong></li>
