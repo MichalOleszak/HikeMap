@@ -51,17 +51,6 @@ header h1 {
   width: 100%;
   height: 580px;
 }
-
-.panel-meta {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  background: rgba(5, 12, 18, 0.85);
-  font-size: 0.85rem;
-}
-
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
