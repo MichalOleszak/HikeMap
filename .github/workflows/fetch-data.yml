@@ -27,6 +27,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure Garmin cache directory
+        run: mkdir -p ~/.garth
+
+      - name: Restore Garmin token cache
+        id: garmin-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.garth
+          key: garmin-token-v1-${{ github.run_id }}
+          restore-keys: |
+            garmin-token-v1-
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -42,7 +54,14 @@ jobs:
           GARMIN_USERNAME: ${{ secrets.GARMIN_USERNAME }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
         run: |
-          python scripts/fetch_hike_assets.py --limit 10000
+          python scripts/fetch_hike_assets.py --limit 1000
+
+      - name: Save Garmin token cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.garth
+          key: garmin-token-v1-${{ github.run_id }}
 
       - name: Commit and push if changed
         id: commit

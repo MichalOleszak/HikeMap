@@ -7,6 +7,7 @@ import json
 import os
 import re
 import sys
+import time
 import unicodedata
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
@@ -219,6 +220,29 @@ def ensure_garmin_available() -> None:
         sys.exit(1)
 
 
+def login_with_retry(client: "Garmin", attempts: int = 3, initial_delay: int = 60) -> None:
+    delay = initial_delay
+    last_error: Optional[Exception] = None
+    for attempt in range(1, attempts + 1):
+        try:
+            client.login()
+            return
+        except GarminConnectTooManyRequestsError as err:  # pragma: no cover - network
+            last_error = err
+            if attempt == attempts:
+                raise
+            wait_time = delay
+            print(
+                f"Garmin rate limit (429) on attempt {attempt}/{attempts}; retrying in {wait_time}s...",
+                file=sys.stderr,
+            )
+            time.sleep(wait_time)
+            delay *= 2
+
+    if last_error is not None:
+        raise last_error
+
+
 def fetch_from_garmin(limit: int) -> List[Hike]:
     ensure_garmin_available()
     username = os.environ.get("GARMIN_USERNAME")
@@ -228,7 +252,7 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
 
     client = Garmin(username, password)
     try:
-        client.login()
+        login_with_retry(client)
     except GarminConnectAuthenticationError as err:  # pragma: no cover - network
         raise SystemExit(f"Failed to authenticate with Garmin: {err}")
 
@@ -274,7 +298,7 @@ def main() -> None:
     parser.add_argument(
         "--limit",
         type=int,
-        default=10000,
+        default=1000,
         help="Approximate number of recent activities to inspect (batched at 1000 per API call)",
     )
     parser.add_argument(
