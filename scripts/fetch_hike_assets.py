@@ -16,10 +16,15 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 try:
-    from garminconnect import Garmin, GarminConnectAuthenticationError  # type: ignore
+    from garminconnect import (
+        Garmin,
+        GarminConnectAuthenticationError,
+        GarminConnectTooManyRequestsError,
+    )  # type: ignore
 except ImportError:  # pragma: no cover - handled by requirements
     Garmin = None  # type: ignore
     GarminConnectAuthenticationError = Exception  # type: ignore
+    GarminConnectTooManyRequestsError = Exception  # type: ignore
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "public" / "data"
 SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_data"
@@ -287,7 +292,14 @@ def main() -> None:
         }
     else:
         overrides = load_overrides()
-        hikes = fetch_from_garmin(args.limit)
+        try:
+            hikes = fetch_from_garmin(args.limit)
+        except GarminConnectTooManyRequestsError as err:  # pragma: no cover - network
+            print(
+                f"Garmin rate limit hit ({err}); skipping refresh to avoid failures.",
+                file=sys.stderr,
+            )
+            return
         applied_overrides = apply_overrides(hikes, overrides)
         manual_hikes = load_manual_hikes()
         if manual_hikes:
