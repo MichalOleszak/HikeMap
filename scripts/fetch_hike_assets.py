@@ -20,11 +20,13 @@ try:
     from garminconnect import (
         Garmin,
         GarminConnectAuthenticationError,
+        GarminConnectConnectionError,
         GarminConnectTooManyRequestsError,
     )  # type: ignore
 except ImportError:  # pragma: no cover - handled by requirements
     Garmin = None  # type: ignore
     GarminConnectAuthenticationError = Exception  # type: ignore
+    GarminConnectConnectionError = Exception  # type: ignore
     GarminConnectTooManyRequestsError = Exception  # type: ignore
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "public" / "data"
@@ -227,17 +229,27 @@ def login_with_retry(client: "Garmin", attempts: int = 3, initial_delay: int = 6
         try:
             client.login()
             return
+        except GarminConnectAuthenticationError:
+            raise
         except GarminConnectTooManyRequestsError as err:  # pragma: no cover - network
             last_error = err
-            if attempt == attempts:
+        except GarminConnectConnectionError as err:  # pragma: no cover - network
+            if "429" not in str(err):
                 raise
-            wait_time = delay
-            print(
-                f"Garmin rate limit (429) on attempt {attempt}/{attempts}; retrying in {wait_time}s...",
-                file=sys.stderr,
-            )
-            time.sleep(wait_time)
-            delay *= 2
+            last_error = err
+        else:
+            last_error = None
+
+        if attempt == attempts:
+            break
+
+        wait_time = delay
+        print(
+            f"Garmin rate limit (429) on attempt {attempt}/{attempts}; retrying in {wait_time}s...",
+            file=sys.stderr,
+        )
+        time.sleep(wait_time)
+        delay *= 2
 
     if last_error is not None:
         raise last_error
