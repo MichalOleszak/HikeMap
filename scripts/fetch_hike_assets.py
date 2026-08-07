@@ -30,6 +30,7 @@ except ImportError:  # pragma: no cover - handled by requirements
     GarminConnectTooManyRequestsError = Exception  # type: ignore
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "public" / "data"
+WORKOUT_STATS_PATH = DATA_DIR / "workout-stats-2026.json"
 SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_data"
 MANUAL_HIKES_PATH = Path(__file__).resolve().parents[1] / "data" / "manual_hikes.yaml"
 
@@ -193,7 +194,46 @@ def load_manual_hikes() -> List[Hike]:
     return hikes
 
 
-def write_payload(hikes: List[Hike], meta: Dict[str, Any]) -> None:
+def build_workout_stats(activities: List[Dict[str, Any]], year: int) -> Dict[str, Any]:
+    """Build aggregate counts for every Garmin activity in *year*.
+
+    This intentionally does not expose individual non-hiking activities. The
+    aggregate feeds the private Obsidian goal tracker without requiring it to
+    perform a second Garmin login from a separate GitHub Action.
+    """
+    monthly = [0] * 12
+    latest_date: Optional[str] = None
+
+    for activity in activities:
+        raw_start = activity.get("startTimeLocal") or activity.get("startTimeGMT")
+        if not isinstance(raw_start, str) or len(raw_start) < 10:
+            continue
+        try:
+            activity_date = datetime.fromisoformat(raw_start[:10]).date()
+        except ValueError:
+            continue
+        if activity_date.year != year:
+            continue
+        monthly[activity_date.month - 1] += 1
+        date_string = activity_date.isoformat()
+        if latest_date is None or date_string > latest_date:
+            latest_date = date_string
+
+    return {
+        "year": year,
+        "total": sum(monthly),
+        "monthly": monthly,
+        "latest_activity": latest_date,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "definition": "Every Garmin activity counts as a workout.",
+    }
+
+
+def write_payload(
+    hikes: List[Hike],
+    meta: Dict[str, Any],
+    workout_stats: Optional[Dict[str, Any]] = None,
+) -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     hikes_path = DATA_DIR / "hikes.json"
     meta_path = DATA_DIR / "meta.json"
@@ -205,6 +245,11 @@ def write_payload(hikes: List[Hike], meta: Dict[str, Any]) -> None:
     with meta_path.open("w", encoding="utf-8") as fp:
         json.dump(meta, fp, indent=2)
         fp.write("\n")
+
+    if workout_stats is not None:
+        with WORKOUT_STATS_PATH.open("w", encoding="utf-8") as fp:
+            json.dump(workout_stats, fp, indent=2)
+            fp.write("\n")
 
     print(f"Wrote {len(hikes)} hikes to {hikes_path.relative_to(Path.cwd())}")
 
@@ -255,7 +300,7 @@ def login_with_retry(client: "Garmin", attempts: int = 3, initial_delay: int = 6
         raise last_error
 
 
-def fetch_from_garmin(limit: int) -> List[Hike]:
+def fetch_from_garmin(limit: int) -> tuple[List[Hike], List[Dict[str, Any]]]:
     ensure_garmin_available()
     username = os.environ.get("GARMIN_USERNAME")
     password = os.environ.get("GARMIN_PASSWORD")
@@ -311,7 +356,7 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
         hikes.append(Hike.from_activity(activity, polyline))
 
     hikes.sort(key=lambda h: h.date or "", reverse=True)
-    return hikes
+    return hikes, activities
 
 
 def main() -> None:
@@ -331,6 +376,7 @@ def main() -> None:
 
     if args.use_sample:
         hikes = load_sample()
+        workout_stats = None
         meta = {
             "last_updated": datetime.now(timezone.utc).isoformat(),
             "source": "sample",
@@ -338,13 +384,14 @@ def main() -> None:
     else:
         overrides = load_overrides()
         try:
-            hikes = fetch_from_garmin(args.limit)
+            hikes, activities = fetch_from_garmin(args.limit)
         except GarminConnectTooManyRequestsError as err:  # pragma: no cover - network
             print(
                 f"Garmin rate limit hit ({err}); skipping refresh to avoid failures.",
                 file=sys.stderr,
             )
             return
+        workout_stats = build_workout_stats(activities, 2026)
         applied_overrides = apply_overrides(hikes, overrides)
         manual_hikes = load_manual_hikes()
         if manual_hikes:
@@ -359,7 +406,7 @@ def main() -> None:
     if not hikes:
         print("No hikes found. Consider using --limit to pull more activities.")
 
-    write_payload(hikes, meta)
+    write_payload(hikes, meta, workout_stats)
 
 
 if __name__ == "__main__":

@@ -58,7 +58,7 @@ export GARMIN_PASSWORD="super-secret"
 python3 scripts/fetch_hike_assets.py --limit 10000
 ```
 
-The script writes refreshed JSON to `public/data/` and updates `meta.json` with a timestamp (plus counts for manual hikes and overrides, if any). Any changes can then be committed and pushed.
+The script writes refreshed JSON to `public/data/` and updates `meta.json` with a timestamp (plus counts for manual hikes and overrides, if any). It also writes `workout-stats-2026.json`: an aggregate-only count of every Garmin activity in 2026, used by the private Obsidian goals vault. Any changes can then be committed and pushed.
 
 ## GitHub Actions
 
