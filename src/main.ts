@@ -207,6 +207,17 @@ function attachMap(hikes: Hike[]): void {
 
   validHikes.forEach((hike) => {
     if (hike.location.lat == null || hike.location.lng == null) return;
+
+    if (hike.polyline && hike.polyline.length > 1) {
+      L.polyline(hike.polyline, {
+        color: '#ff7b4a',
+        weight: 2,
+        opacity: 0.65,
+        interactive: false,
+      }).addTo(currentMap);
+      hike.polyline.forEach((pt) => bounds.extend(pt as [number, number]));
+    }
+
     const marker = L.marker([hike.location.lat, hike.location.lng], {
       icon: hikeIcon,
     }).addTo(currentMap);

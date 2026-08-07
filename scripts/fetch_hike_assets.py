@@ -68,7 +68,7 @@ class Hike:
     max_elevation_m: Optional[float]
     duration_h: Optional[float]
     location: Dict[str, Optional[float]]
-    polyline: Optional[str]
+    polyline: Optional[List[List[float]]]
     cover_photo: Optional[str]
 
     @staticmethod
@@ -292,11 +292,20 @@ def fetch_from_garmin(limit: int) -> List[Hike]:
         polyline = None
         try:
             details = client.get_activity_details(activity_id)
-            polyline = (
+            raw_polyline = (
                 details.get("geoPolylineDTO", {}).get("polyline")
                 if isinstance(details, dict)
                 else None
             )
+            if raw_polyline:
+                # Keep only lat/lon — the full Garmin point objects carry 13
+                # fields (speed, cumulative ascent, timer flags, etc.) that are
+                # not needed for map rendering and bloat the JSON enormously.
+                polyline = [
+                    [round(pt["lat"], 5), round(pt["lon"], 5)]
+                    for pt in raw_polyline
+                    if pt.get("lat") is not None and pt.get("lon") is not None
+                ] or None
         except Exception:  # pragma: no cover - best effort
             polyline = None
         hikes.append(Hike.from_activity(activity, polyline))
