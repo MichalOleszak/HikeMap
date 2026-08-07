@@ -15,7 +15,7 @@ type Hike = {
     lat: number | null;
     lng: number | null;
   };
-  polyline: string | null;
+  polyline: [number, number][] | null;
   cover_photo: string | null;
 };
 
