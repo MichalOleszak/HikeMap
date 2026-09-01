@@ -79,31 +79,33 @@ jobs:
           echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Set up Node
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install npm dependencies
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
         run: npm ci
 
       - name: Build site
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
+        env:
+          VITE_CARTO_API_KEY: ${{ secrets.CARTO_API_KEY }}
         run: npm run build
 
       - name: Configure Pages
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - name: Deploy to GitHub Pages
         id: deploy
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'schedule' || steps.commit.outputs.changed == 'true'
         uses: actions/deploy-pages@v4

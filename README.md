@@ -74,6 +74,7 @@ Ensure the repository has the following Actions secrets configured:
 
 - `GARMIN_USERNAME`
 - `GARMIN_PASSWORD`
+- `CARTO_API_KEY` — Carto basemap key restricted to the GitHub Pages domain; it is embedded in the browser bundle during the build, so do not use a server-secret key.
 - `GITHUB_TOKEN` (provided automatically)
 
 Once the workflow runs successfully, GitHub Pages serves the site from the `github-pages` environment. EOF

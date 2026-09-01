@@ -27,6 +27,7 @@ type Meta = {
 
 const DATA_PATH = `${import.meta.env.BASE_URL}data/hikes.json`;
 const META_PATH = `${import.meta.env.BASE_URL}data/meta.json`;
+const CARTO_API_KEY = import.meta.env.VITE_CARTO_API_KEY as string | undefined;
 
 let map: L.Map | null = null;
 
@@ -43,9 +44,13 @@ function ensureMap(): L.Map {
       zoomControl: false,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    if (!CARTO_API_KEY) {
+      console.warn('VITE_CARTO_API_KEY is not configured; Carto basemap tiles may not load.');
+    }
+
+    const cartoKeyParameter = CARTO_API_KEY ? `?key=${encodeURIComponent(CARTO_API_KEY)}` : '';
+    L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png${cartoKeyParameter}`, {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
       minZoom: 2,
       maxZoom: 19,
     }).addTo(map);
