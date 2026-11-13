@@ -1,6 +1,6 @@
 {
   "year": 2026,
-  "total": 156,
+  "total": 157,
   "monthly": [
     11,
     10,
@@ -12,10 +12,10 @@
     19,
     10,
     16,
-    8,
+    9,
     0
   ],
-  "latest_activity": "2026-11-10",
-  "updated_at": "2026-11-12T02:05:04.313948+00:00",
+  "latest_activity": "2026-11-12",
+  "updated_at": "2026-11-13T02:04:20.957476+00:00",
   "definition": "Every Garmin activity counts as a workout."
 }
